@@ -5,7 +5,7 @@ import random
 import math
 
 DATASET_DIR = "dataset"
-CSV_FILE = "labels.csv"
+CSV_FILE = "data\labels.csv"
 
 SIZE = 64
 NUM_IMAGES = 1000
@@ -13,8 +13,6 @@ SHAPES = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "oc
 
 os.makedirs(DATASET_DIR, exist_ok=True)
 
-def random_color():
-    return tuple(random.randint(36, 236) for _ in range(3))
 
 def draw_polygon(draw, cx, cy, radius, sides, color):
     points = []
@@ -23,10 +21,10 @@ def draw_polygon(draw, cx, cy, radius, sides, color):
         x = cx + radius * math.cos(angle)
         y = cy + radius * math.sin(angle)
         points.append((x, y))
-    draw.polygon(points, fill=color)
+    draw.polygon(points, outline=color, width=1)
 
 def draw_shape(draw, shape):
-    color = random_color()
+    color = 255
 
     x1 = random.randint(5, 30)
     y1 = random.randint(5, 30)
@@ -38,21 +36,22 @@ def draw_shape(draw, shape):
     radius = min(x2 - x1, y2 - y1) // 2
 
     if shape == "circle":
-        draw.ellipse([x1, y1, x2, y2], fill=color)
+        side = min(x2 - x1, y2 - y1)
+        draw.ellipse([x1, y1, x1 + side, y1 + side], outline=color, width=1)
 
     elif shape == "ellipse":
-        draw.ellipse([x1, y1, x2, y2], fill=color)
+        draw.ellipse([x1, y1, x2, y2], outline=color, width=1)
 
     elif shape == "square":
         side = min(x2 - x1, y2 - y1)
-        draw.rectangle([x1, y1, x1 + side, y1 + side], fill=color)
+        draw.rectangle([x1, y1, x1 + side, y1 + side], outline=color, width=1)
 
     elif shape == "rectangle":
-        draw.rectangle([x1, y1, x2, y2], fill=color)
+        draw.rectangle([x1, y1, x2, y2], outline=color, width=1)
 
     elif shape == "triangle":
         points = [(cx, y1), (x1, y2), (x2, y2)]
-        draw.polygon(points, fill=color)
+        draw.polygon(points, outline=color, width=1)
 
     elif shape == "hexagon":
         draw_polygon(draw, cx, cy, radius, 6, color)
@@ -65,7 +64,7 @@ with open(CSV_FILE, mode="w", newline="") as f:
     writer.writerow(["filename", "label"])
 
     for i in range(NUM_IMAGES):
-        img = Image.new("RGB", (SIZE, SIZE), (0, 0, 0))
+        img = Image.new("L", (SIZE, SIZE), 0)
         draw = ImageDraw.Draw(img)
 
         shape = random.choice(SHAPES)
