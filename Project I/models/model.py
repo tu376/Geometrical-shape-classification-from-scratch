@@ -1,5 +1,5 @@
 import numpy as np
-from layers import Conv2D, MaxPool2D, ReLu, Flatten, Linear, SoftMaxCrossEntropy
+from .layers import Conv2D, MaxPool2D, ReLu, Flatten, Linear, SoftMaxCrossEntropy
 
 # Kiến trúc: Conv -> ReLU -> Pool -> Conv -> ReLU -> Pool -> Flatten -> Linear
 # Input: (1, 64, 64) - ảnh grayscale 64x64

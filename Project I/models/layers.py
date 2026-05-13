@@ -22,49 +22,127 @@ class Conv2D:
         self.kernels = np.random.randn(*self.kernels_shape) * np.sqrt(2.0 / fan_in)
         self.biases = np.zeros(C_out)
 
-    def forward(self, input):
-        self.input = input
-        output = np.zeros(self.output_shape)
+    # def forward(self, input):
+    #     self.input = input
+    #     output = np.zeros(self.output_shape)
 
-        for oc in range(self.C_out):
-            for i in range(self.H_out):
-                for j in range(self.W_out):
-                    s = 0
+    #     for oc in range(self.C_out):
+    #         for i in range(self.H_out):
+    #             for j in range(self.W_out):
+    #                 s = 0
 
-                    for ic in range(self.C_in):
-                        region = input[ic, i: i + self.kernel_size, j: j + self.kernel_size]
-                        s += np.sum(region * self.kernels[oc, ic])
+    #                 for ic in range(self.C_in):
+    #                     region = input[ic, i: i + self.kernel_size, j: j + self.kernel_size]
+    #                     s += np.sum(region * self.kernels[oc, ic])
 
-                    output[oc, i, j] = s + self.biases[oc]
+    #                 output[oc, i, j] = s + self.biases[oc]
         
-        return output
+    #     return output
     
-    def backward(self, d_output , learning_rate):
+    # def backward(self, d_output , learning_rate):
+    #     d_input = np.zeros_like(self.input)
+    #     d_kernels = np.zeros_like(self.kernels)
+    #     d_biases = np.zeros_like(self.biases)
+
+    #     for oc in range(self.C_out):
+    #         for i in range(self.H_out):
+    #             for j in range(self.W_out):
+
+    #                 # Bias Gradient
+    #                 d_biases[oc] += d_output[oc, i, j]
+
+    #                 for ic in range(self.C_in):
+    #                     region = self.input[ic, i: i + self.kernel_size, j: j + self.kernel_size]
+
+    #                     # Kernel Gradient
+    #                     d_kernels[oc, ic] += d_output[oc, i, j] * region
+
+    #                     # Input Gradient
+    #                     d_input[ic, i: i + self.kernel_size, j: j + self.kernel_size] += d_output[oc, i, j] * self.kernels[oc,ic]
+
+    #     # Update
+    #     self.kernels -= learning_rate * d_kernels
+    #     self.biases -= learning_rate * d_biases
+
+    #     return d_input
+
+    def backward(self, d_output, learning_rate):
+
+        # d_output:
+        # (C_out, H_out, W_out)
+
+        d_output_flat = d_output.reshape(self.C_out, -1)
+
+        # =========================
+        # Gradient Bias
+        # =========================
+        d_biases = np.sum(d_output_flat, axis=1)
+
+        # =========================
+        # Gradient Kernel
+        # =========================
+        # dW = dY @ X^T
+
+        d_kernels = d_output_flat @ self.input_col.T
+        d_kernels = d_kernels.reshape(self.kernels_shape)
+
+        # =========================
+        # Gradient Input
+        # =========================
+        kernels_flat = self.kernels.reshape(self.C_out, -1)
+
+        # dX_col = W^T @ dY
+        d_input_col = kernels_flat.T @ d_output_flat
+
+        # col2im
         d_input = np.zeros_like(self.input)
-        d_kernels = np.zeros_like(self.kernels)
-        d_biases = np.zeros_like(self.biases)
 
-        for oc in range(self.C_out):
-            for i in range(self.H_out):
-                for j in range(self.W_out):
+        col_idx = 0
 
-                    # Bias Gradient
-                    d_biases[oc] += d_output[oc, i, j]
+        for i in range(self.H_out):
+            for j in range(self.W_out):
 
-                    for ic in range(self.C_in):
-                        region = self.input[ic, i: i + self.kernel_size, j: j + self.kernel_size]
+                patch = d_input_col[:, col_idx]
 
-                        # Kernel Gradient
-                        d_kernels[oc, ic] += d_output[oc, i, j] * region
+                patch = patch.reshape(
+                    self.C_in,
+                    self.kernel_size,
+                    self.kernel_size
+                )
 
-                        # Input Gradient
-                        d_input[ic, i: i + self.kernel_size, j: j + self.kernel_size] += d_output[oc, i, j] * self.kernels[oc,ic]
+                d_input[
+                    :,
+                    i:i+self.kernel_size,
+                    j:j+self.kernel_size
+                ] += patch
 
+                col_idx += 1
+
+        # =========================
         # Update
+        # =========================
         self.kernels -= learning_rate * d_kernels
         self.biases -= learning_rate * d_biases
 
         return d_input
+
+    def forward(self, input):
+        self.input = input
+        # Trải input thành ma trận: (C_in*k*k, H_out*W_out)
+        self.input_col = self._im2col(input)
+        # kernels reshape thành (C_out, C_in*k*k)
+        kernels_flat = self.kernels.reshape(self.C_out, -1)
+        
+        output = kernels_flat @ self.input_col + self.biases[:, None]
+        return output.reshape(self.C_out, self.H_out, self.W_out)
+
+    def _im2col(self, input):
+        cols = []
+        for i in range(self.H_out):
+            for j in range(self.W_out):
+                patch = input[:, i:i+self.kernel_size, j:j+self.kernel_size]
+                cols.append(patch.reshape(-1))
+        return np.array(cols).T  # (C_in*k*k, H_out*W_out)
 
 class MaxPool2D:
     def __init__(self, kernel_size=2, stride=2):
