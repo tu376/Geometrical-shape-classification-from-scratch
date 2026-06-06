@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 
-from models.model import CNN
+from model import CNN
 
 SHAPES = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "octagon"]
 
@@ -14,7 +14,7 @@ model.load("weights.npy")
 # =========================
 # Load image
 # =========================
-image = Image.open("dataset\img_3.png").convert("L")
+image = Image.open("img_0.png").convert("L")
 
 # resize đúng size model
 image = image.resize((64, 64))
