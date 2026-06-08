@@ -1,38 +1,12 @@
-import numpy as np
-from PIL import Image
-
+# main.py
 from model import CNN
+from utils import load_data, evaluate, predict_image, confusion_matrix
 
-SHAPES = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "octagon"]
+if __name__ == "__main__":
+    model = CNN()
+    model.load("weights.npy")
 
-# =========================
-# Load model
-# =========================
-model = CNN()
-model.load("weights.npy")
+    images, labels = load_data("data/labels.csv", "dataset")
+    predict_image(model, "img_0.png")
 
-# =========================
-# Load image
-# =========================
-image = Image.open("img_0.png").convert("L")
-
-# resize đúng size model
-image = image.resize((64, 64))
-
-# normalize về [0,1]
-image = np.array(image, dtype=np.float32) / 255.0
-
-# shape:
-# (64,64) -> (1,64,64)
-image = image.reshape(1, 64, 64)
-
-# =========================
-# Predict
-# =========================
-pred, probs = model.predict(image)
-
-print("Predict:", SHAPES[pred])
-
-print("\nProbabilities:")
-for i, p in enumerate(probs):
-    print(f"{SHAPES[i]}: {p:.4f}")
+    # predict_image(model, "my_shape.png")  # uncomment to test a single image

@@ -1,111 +1,157 @@
 import os
 import csv
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 import random
 import math
 import numpy as np
+from scipy.ndimage import convolve
 
 DATASET_DIR = "dataset"
-CSV_FILE = "data\labels.csv"
+CSV_FILE    = os.path.join("data", "labels.csv")
 
-SIZE = 64
-NUM_IMAGES = 5000
-SHAPES = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "octagon"]
+SIZE       = 64
+NUM_IMAGES = 10000
+SHAPES     = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "octagon"]
 
 os.makedirs(DATASET_DIR, exist_ok=True)
+os.makedirs("data",      exist_ok=True)
 
+
+# ==========================================================
+# NOISE
+# ==========================================================
+
+def add_noise(img_array):
+    noise_fns = [
+        _gaussian,
+        _salt_pepper,
+        _blur,
+        lambda x: _gaussian(_salt_pepper(x)),   # combined
+        lambda x: _blur(_gaussian(x)),           # combined
+    ]
+    fn = random.choice(noise_fns)
+    return np.clip(fn(img_array.astype(np.float32)), 0, 255).astype(np.uint8)
+
+
+def _gaussian(arr):
+    return arr + np.random.normal(0, random.uniform(5, 20), arr.shape)
+
+
+def _salt_pepper(arr):
+    mask        = np.random.rand(*arr.shape)
+    arr         = arr.copy()
+    arr[mask < 0.02] = 0
+    arr[mask > 0.98] = 255
+    return arr
+
+
+def _blur(arr):
+    k = np.ones((2, 2)) / 4
+    return convolve(arr, k)
+
+
+# ==========================================================
+# SHAPES
+# ==========================================================
 
 def draw_polygon(draw, cx, cy, radius, sides, color):
+    angle_offset = -math.pi / 2   # start from top
     points = []
     for i in range(sides):
-        angle = 2 * math.pi * i / sides
-        x = cx + radius * math.cos(angle)
-        y = cy + radius * math.sin(angle)
-        points.append((x, y))
+        angle = angle_offset + 2 * math.pi * i / sides
+        points.append((cx + radius * math.cos(angle),
+                        cy + radius * math.sin(angle)))
     draw.polygon(points, outline=color, width=1)
+
 
 def draw_shape(draw, shape):
     color = 255
-
-    x1 = random.randint(5, 25)
-    y1 = random.randint(5, 25)
-    x2 = random.randint(38, 59)
-    y2 = random.randint(38, 59)
-
-    cx = (x1 + x2) // 2
-    cy = (y1 + y2) // 2
-    radius = min(x2 - x1, y2 - y1) // 2
+    cx    = random.randint(20, 44)
+    cy    = random.randint(20, 44)
 
     if shape == "circle":
-        side = min(x2 - x1, y2 - y1)
-        draw.ellipse([cx - side//2, cy - side//2,
-                      cx + side//2, cy + side//2], outline=color, width=1)
+        # always perfect square bounding box
+        r = random.randint(10, 20)
+        draw.ellipse([cx-r, cy-r, cx+r, cy+r], outline=color, width=1)
 
     elif shape == "ellipse":
-        # Đảm bảo ellipse không tròn: 1 chiều phải dài hơn ít nhất 1.4x
-        w = x2 - x1
-        h = y2 - y1
-        if w / h > 0.8 and w / h < 1.25:
-            # Kéo dài theo chiều ngang hoặc dọc
-            if random.random() > 0.5:
-                x2 = x1 + int(h * 1.5)
-            else:
-                y2 = y1 + int(w * 1.5)
-        draw.ellipse([x1, y1, x2, y2], outline=color, width=1)
+        # enforce noticeable aspect ratio — never close to 1:1
+        r_major = random.randint(18, 26)
+        r_minor = random.randint(7,  12)   # always much smaller than major
+        if random.random() < 0.5:
+            draw.ellipse([cx-r_major, cy-r_minor, cx+r_major, cy+r_minor], outline=color, width=1)
+        else:
+            draw.ellipse([cx-r_minor, cy-r_major, cx+r_minor, cy+r_major], outline=color, width=1)
 
     elif shape == "square":
-        side = min(x2 - x1, y2 - y1)
-        draw.rectangle([cx - side//2, cy - side//2,
-                        cx + side//2, cy + side//2], outline=color, width=1)
+        # always equal sides
+        s = random.randint(10, 22)
+        draw.rectangle([cx-s, cy-s, cx+s, cy+s], outline=color, width=1)
 
     elif shape == "rectangle":
-        # Đảm bảo rectangle không vuông: ratio phải > 1.3
-        w = x2 - x1
-        h = y2 - y1
-        if 0.8 < w / h < 1.3:
-            if random.random() > 0.5:
-                x2 = x1 + int(h * 1.5)
-            else:
-                y2 = y1 + int(w * 1.5)
-        draw.rectangle([x1, y1, x2, y2], outline=color, width=1)
+        # enforce noticeable aspect ratio — never close to 1:1
+        w = random.randint(20, 28)
+        h = random.randint(7,  13)   # always much smaller than w
+        if random.random() < 0.5:
+            draw.rectangle([cx-w, cy-h, cx+w, cy+h], outline=color, width=1)
+        else:
+            draw.rectangle([cx-h, cy-w, cx+h, cy+w], outline=color, width=1)
 
     elif shape == "triangle":
-        points = [(cx, y1), (x1, y2), (x2, y2)]
+        offset = random.randint(5, 10)
+        r      = random.randint(15, 25)
+        points = [
+            (cx,          cy - r),
+            (cx - r,      cy + r - offset),
+            (cx + r,      cy + r - offset),
+        ]
         draw.polygon(points, outline=color, width=1)
 
     elif shape == "hexagon":
-        draw_polygon(draw, cx, cy, radius, 6, color)
+        draw_polygon(draw, cx, cy, random.randint(14, 24), 6, color)
 
     elif shape == "octagon":
-        draw_polygon(draw, cx, cy, radius, 8, color)
+        draw_polygon(draw, cx, cy, random.randint(14, 22), 8, color)
 
-with open(CSV_FILE, mode="w", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow(["filename", "label"])
 
-    for i in range(NUM_IMAGES):
-        img = Image.new("L", (SIZE, SIZE), 0)
-        draw = ImageDraw.Draw(img)
+# ==========================================================
+# GENERATE
+# ==========================================================
 
-        shape = random.choice(SHAPES)
-        draw_shape(draw, shape)
+# with open(CSV_FILE, mode="w", newline="") as f:
+#     writer = csv.writer(f)
+#     writer.writerow(["filename", "label"])
 
-        filename = f"img_{i}.png"
-        filepath = os.path.join(DATASET_DIR, filename)
+#     for i in range(NUM_IMAGES):
+#         img   = Image.new("L", (SIZE, SIZE), 0)
+#         draw  = ImageDraw.Draw(img)
 
-        img.save(filepath)
-        writer.writerow([filename, shape])
+#         shape = random.choice(SHAPES)
+#         draw_shape(draw, shape)
 
-print("Done!")
+#         # add noise to ~70% of images
+#         if random.random() < 0.7:
+#             arr = np.array(img)
+#             arr = add_noise(arr)
+#             img = Image.fromarray(arr)
 
-# if __name__ == "__main__":
-#     img = Image.new("L", (SIZE, SIZE), 0)
-#     draw = ImageDraw.Draw(img)
+#         filename = f"img_{i}.png"
+#         img.save(os.path.join(DATASET_DIR, filename))
+#         writer.writerow([filename, shape])
 
-#     shape = random.choice(SHAPES)
-#     draw_shape(draw, shape)
+# print(f"Done! {NUM_IMAGES} images saved to {DATASET_DIR}/")
+if __name__ == "__main__":
+    img   = Image.new("L", (SIZE, SIZE), 0)
+    draw  = ImageDraw.Draw(img)
 
-#     filename = f"img_{0}.png"
+    shape = "octagon"
+    draw_shape(draw, shape)
 
-#     img.save(filename)
-#     print("Done!")
+    # add noise to ~70% of images
+    if random.random() < 0.7:
+        arr = np.array(img)
+        arr = add_noise(arr)
+        img = Image.fromarray(arr)
+
+    filename = f"img_{0}.png"
+    img.save(filename)
