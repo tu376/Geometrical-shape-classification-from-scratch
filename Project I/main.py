@@ -206,3 +206,11 @@ if __name__ == "__main__":
         predict_image(model, img_path)
     elif img_path:
         print("Image file not found!")
+
+"""
+training curve
+confusion matrix
+recall, acc, pres, F1
+optional:MAP, ROC
+
+"""

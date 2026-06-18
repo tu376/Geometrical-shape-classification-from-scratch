@@ -7,48 +7,13 @@ import numpy as np
 from scipy.ndimage import convolve
 
 DATASET_DIR = "dataset"
-CSV_FILE    = os.path.join("data", "labels.csv")
+CSV_FILE    = "labels.csv"
 
 SIZE       = 64
 NUM_IMAGES = 10000
 SHAPES     = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "octagon"]
 
 os.makedirs(DATASET_DIR, exist_ok=True)
-os.makedirs("data",      exist_ok=True)
-
-
-# ==========================================================
-# NOISE
-# ==========================================================
-
-def add_noise(img_array):
-    noise_fns = [
-        _gaussian,
-        _salt_pepper,
-        _blur,
-        lambda x: _gaussian(_salt_pepper(x)),   # combined
-        lambda x: _blur(_gaussian(x)),           # combined
-    ]
-    fn = random.choice(noise_fns)
-    return np.clip(fn(img_array.astype(np.float32)), 0, 255).astype(np.uint8)
-
-
-def _gaussian(arr):
-    return arr + np.random.normal(0, random.uniform(5, 20), arr.shape)
-
-
-def _salt_pepper(arr):
-    mask        = np.random.rand(*arr.shape)
-    arr         = arr.copy()
-    arr[mask < 0.02] = 0
-    arr[mask > 0.98] = 255
-    return arr
-
-
-def _blur(arr):
-    k = np.ones((2, 2)) / 4
-    return convolve(arr, k)
-
 
 # ==========================================================
 # SHAPES
@@ -129,12 +94,6 @@ def draw_shape(draw, shape):
 #         shape = random.choice(SHAPES)
 #         draw_shape(draw, shape)
 
-#         # add noise to ~70% of images
-#         if random.random() < 0.7:
-#             arr = np.array(img)
-#             arr = add_noise(arr)
-#             img = Image.fromarray(arr)
-
 #         filename = f"img_{i}.png"
 #         img.save(os.path.join(DATASET_DIR, filename))
 #         writer.writerow([filename, shape])
@@ -150,7 +109,6 @@ if __name__ == "__main__":
     # add noise to ~70% of images
     if random.random() < 0.7:
         arr = np.array(img)
-        arr = add_noise(arr)
         img = Image.fromarray(arr)
 
     filename = f"img_{0}.png"
