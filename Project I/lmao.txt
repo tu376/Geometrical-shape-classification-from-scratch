@@ -1,0 +1,87 @@
+=== LOADING DATA ===
+Total: 10000 | Train: 7997 | Val: 2003
+
+=== DISTRIBUTION ===
+
+Class           Train   Test
+----------------------------
+circle           1128    283
+ellipse          1136    284
+square           1137    285
+triangle         1163    291
+rectangle        1122    281
+hexagon          1118    280
+octagon          1193    299
+----------------------------
+Total            7997   2003
+
+Found 'weights.npy'.
+Train again? (y/n): y
+
+=== TRAINING ===
+Epoch  1/20 | Train Loss: 1.9475  Acc: 24.20% | Val Loss: 1.6951  Acc: 38.94% | Time: 85.54s ✓ best
+Epoch  2/20 | Train Loss: 1.7703  Acc: 34.06% | Val Loss: 1.4036  Acc: 51.62% | Time: 80.47s ✓ best
+Epoch  3/20 | Train Loss: 1.5695  Acc: 45.48% | Val Loss: 1.0624  Acc: 62.41% | Time: 74.00s ✓ best
+Epoch  4/20 | Train Loss: 1.3541  Acc: 53.41% | Val Loss: 0.8427  Acc: 70.89% | Time: 74.40s ✓ best
+Epoch  5/20 | Train Loss: 1.1494  Acc: 60.81% | Val Loss: 0.6768  Acc: 78.18% | Time: 73.46s ✓ best
+Epoch  6/20 | Train Loss: 1.0037  Acc: 67.08% | Val Loss: 0.5629  Acc: 82.18% | Time: 73.50s ✓ best
+Epoch  7/20 | Train Loss: 0.8793  Acc: 71.43% | Val Loss: 0.4339  Acc: 88.42% | Time: 73.17s ✓ best
+Epoch  8/20 | Train Loss: 0.7848  Acc: 75.43% | Val Loss: 0.3571  Acc: 89.62% | Time: 77.25s ✓ best
+Epoch  9/20 | Train Loss: 0.7208  Acc: 77.97% | Val Loss: 0.3278  Acc: 92.66% | Time: 82.32s ✓ best
+Epoch 10/20 | Train Loss: 0.6584  Acc: 80.77% | Val Loss: 0.2451  Acc: 94.71% | Time: 73.79s ✓ best
+Epoch 11/20 | Train Loss: 0.6142  Acc: 81.77% | Val Loss: 0.2121  Acc: 96.41% | Time: 73.00s ✓ best
+Epoch 12/20 | Train Loss: 0.5904  Acc: 82.34% | Val Loss: 0.1968  Acc: 95.46% | Time: 73.35s ✓ best
+Epoch 13/20 | Train Loss: 0.5512  Acc: 83.43% | Val Loss: 0.1562  Acc: 96.61% | Time: 72.83s ✓ best
+Epoch 14/20 | Train Loss: 0.5144  Acc: 84.36% | Val Loss: 0.1545  Acc: 96.36% | Time: 73.37s ✓ best
+Epoch 15/20 | Train Loss: 0.4790  Acc: 86.39% | Val Loss: 0.1377  Acc: 97.20% | Time: 73.61s ✓ best
+Epoch 16/20 | Train Loss: 0.4632  Acc: 86.34% | Val Loss: 0.1274  Acc: 97.00% | Time: 74.20s ✓ best
+Epoch 17/20 | Train Loss: 0.4477  Acc: 86.51% | Val Loss: 0.1225  Acc: 97.15% | Time: 72.94s ✓ best
+Epoch 18/20 | Train Loss: 0.4416  Acc: 87.27% | Val Loss: 0.1208  Acc: 97.70% | Time: 73.42s ✓ best
+Epoch 19/20 | Train Loss: 0.4074  Acc: 88.33% | Val Loss: 0.1124  Acc: 97.15% | Time: 72.83s ✓ best
+Epoch 20/20 | Train Loss: 0.4143  Acc: 88.33% | Val Loss: 0.1184  Acc: 96.75% | Time: 70.28s
+
+Restored best weights (val loss: 0.1124)
+
+Total training time: 24m 57.71s
+Saved weights to weights.npy
+
+=== Validation Set ===
+
+Overall Accuracy: 97.15%
+
+Class             Prec  Recall      F1   Total
+----------------------------------------------
+circle           96.9%   98.6%   97.7%     283
+ellipse          98.5%   95.1%   96.8%     284
+square           95.2%   90.9%   93.0%     285
+triangle        100.0%  100.0%  100.0%     291
+rectangle        89.6%   95.4%   92.4%     281
+hexagon         100.0%  100.0%  100.0%     280
+octagon         100.0%  100.0%  100.0%     299
+----------------------------------------------
+Macro avg        97.2%   97.1%   97.1%
+
+Total execution time: 26m 0.68s
+Saved training curves to training_curves.png
+
+=== TEST SET ===
+
+=== Test Set ===
+
+Overall Accuracy: 96.40%
+
+Class             Prec  Recall      F1   Total
+----------------------------------------------
+circle           98.7%   98.1%   98.4%     156
+ellipse          97.8%   97.1%   97.5%     139
+square           94.4%   84.4%   89.1%     141
+triangle        100.0%  100.0%  100.0%     128
+rectangle        84.8%   95.0%   89.6%     141
+hexagon         100.0%  100.0%  100.0%     142
+octagon         100.0%  100.0%  100.0%     153
+----------------------------------------------
+Macro avg        96.5%   96.4%   96.4%
+Saved confusion matrix to confusion_matrix_test.png
+
+=== PREDICT NEW IMAGE ===
+Enter image path (Enter to skip): 

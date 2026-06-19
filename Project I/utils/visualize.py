@@ -9,24 +9,31 @@ import matplotlib.ticker as mticker
 
 def plot_training_curves(history, save_path=None):
     """
-    history: dict with keys 'loss' and 'accuracy' — lists over epochs.
+    history: dict with keys:
+        train_loss, train_accuracy   (required)
+        val_loss,   val_accuracy     (optional)
     """
-    epochs = range(1, len(history["loss"]) + 1)
+    epochs     = range(1, len(history["train_loss"]) + 1)
+    has_val    = "val_loss" in history and len(history["val_loss"]) > 0
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
 
-    # Loss
-    ax1.plot(epochs, history["loss"], "b-o", linewidth=2, markersize=4, label="Train Loss")
-    ax1.set_title("Training Loss")
+    # ── Loss ───────────────────────────────────────────────
+    ax1.plot(epochs, history["train_loss"], "b-o", linewidth=2, markersize=4, label="Train")
+    if has_val:
+        ax1.plot(epochs, history["val_loss"], "r-o", linewidth=2, markersize=4, label="Val")
+    ax1.set_title("Loss")
     ax1.set_xlabel("Epoch")
     ax1.set_ylabel("Loss")
     ax1.xaxis.set_major_locator(mticker.MaxNLocator(integer=True))
     ax1.legend()
     ax1.grid(True, alpha=0.3)
 
-    # Accuracy
-    ax2.plot(epochs, history["accuracy"], "g-o", linewidth=2, markersize=4, label="Train Accuracy")
-    ax2.set_title("Training Accuracy")
+    # ── Accuracy ───────────────────────────────────────────
+    ax2.plot(epochs, history["train_accuracy"], "b-o", linewidth=2, markersize=4, label="Train")
+    if has_val:
+        ax2.plot(epochs, history["val_accuracy"], "r-o", linewidth=2, markersize=4, label="Val")
+    ax2.set_title("Accuracy")
     ax2.set_xlabel("Epoch")
     ax2.set_ylabel("Accuracy (%)")
     ax2.xaxis.set_major_locator(mticker.MaxNLocator(integer=True))

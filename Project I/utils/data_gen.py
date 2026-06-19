@@ -6,11 +6,14 @@ import math
 import numpy as np
 from scipy.ndimage import convolve
 
-DATASET_DIR = "dataset"
+DATASET_DIR = "dataset/train_valid"
+TEST_DIR    = "dataset/test"
 CSV_FILE    = "labels.csv"
+TEST_FILE   = "test.csv"
 
 SIZE       = 64
 NUM_IMAGES = 10000
+NUM_TEST   = 1000
 SHAPES     = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "octagon"]
 
 os.makedirs(DATASET_DIR, exist_ok=True)
@@ -83,22 +86,41 @@ def draw_shape(draw, shape):
 # GENERATE
 # ==========================================================
 
-# with open(CSV_FILE, mode="w", newline="") as f:
-#     writer = csv.writer(f)
-#     writer.writerow(["filename", "label"])
+with open(CSV_FILE, mode="w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["filename", "label"])
 
-#     for i in range(NUM_IMAGES):
-#         img   = Image.new("L", (SIZE, SIZE), 0)
-#         draw  = ImageDraw.Draw(img)
+    for i in range(NUM_IMAGES):
+        img   = Image.new("L", (SIZE, SIZE), 0)
+        draw  = ImageDraw.Draw(img)
 
-#         shape = random.choice(SHAPES)
-#         draw_shape(draw, shape)
+        shape = random.choice(SHAPES)
+        draw_shape(draw, shape)
 
-#         filename = f"img_{i}.png"
-#         img.save(os.path.join(DATASET_DIR, filename))
-#         writer.writerow([filename, shape])
+        filename = f"img_{i}.png"
+        img.save(os.path.join(DATASET_DIR, filename))
+        writer.writerow([filename, shape])
 
-# print(f"Done! {NUM_IMAGES} images saved to {DATASET_DIR}/")
+print(f"Done! {NUM_IMAGES} images saved to {DATASET_DIR}/")
+
+with open(TEST_FILE, mode="w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["filename", "label"])
+
+    for i in range(NUM_TEST):
+        img   = Image.new("L", (SIZE, SIZE), 0)
+        draw  = ImageDraw.Draw(img)
+
+        shape = random.choice(SHAPES)
+        draw_shape(draw, shape)
+
+        filename = f"img_{i}.png"
+        img.save(os.path.join(TEST_DIR, filename))
+        writer.writerow([filename, shape])
+
+print(f"Done! {NUM_TEST} images saved to {TEST_DIR}/")
+
+'''
 if __name__ == "__main__":
     img   = Image.new("L", (SIZE, SIZE), 0)
     draw  = ImageDraw.Draw(img)
@@ -113,3 +135,4 @@ if __name__ == "__main__":
 
     filename = f"img_{0}.png"
     img.save(filename)
+'''
