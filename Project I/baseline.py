@@ -8,18 +8,21 @@ import time
 
 from model import CNN, SHAPES
 from utils import (
-    load_data, train_test_split,
+    load_data,
     create_batches,
     print_classification_report,
     plot_confusion_matrix,
+    confusion_matrix,
 )
 
 # ==========================================================
 # CONFIG
 # ==========================================================
 
-DATASET_DIR   = "dataset"
+TRAIN_DIR     = "dataset/train_valid"
+TEST_DIR      = "dataset/test"
 CSV_FILE      = "labels.csv"
+TEST_CSV_FILE = "test.csv"
 WEIGHTS_FILE  = "weights.npy"
 BATCH_SIZE    = 64
 
@@ -35,7 +38,7 @@ def extract_raw(images):
 def extract_cnn(model, images):
     """
     Pass images through CNN up to the flatten layer (before linear).
-    Returns feature matrix (N, 4096).
+    Returns feature matrix (N, D).
     """
     model.training = False
     features = []
@@ -48,12 +51,12 @@ def extract_cnn(model, images):
             x = model.relu1.forward(x)
             x = model.pool1.forward(x)
 
-            x = model.conv2.forward(img if False else x)
+            x = model.conv2.forward(x)     # ← sửa: bỏ "img if False else"
             x = model.relu2.forward(x)
             x = model.pool2.forward(x)
 
-            feat = model.flatten.forward(x)   # (D,)
-            features.append(feat)
+            feat = model.flatten.forward(x)  # (1, D)
+            features.append(feat[0])
 
     return np.stack(features)              # (N, D)
 
@@ -61,21 +64,21 @@ def extract_cnn(model, images):
 # RUN ONE MODEL
 # ==========================================================
 
-def run_model(name, clf, X_train, y_train, X_val, y_val, scaler=None):
+def run_model(name, clf, X_train, y_train, X_test, y_test, scaler=None):
     if scaler:
         X_train = scaler.fit_transform(X_train)
-        X_val   = scaler.transform(X_val)
+        X_test  = scaler.transform(X_test)      # ← fit trên train, transform trên test
 
     t0 = time.time()
     clf.fit(X_train, y_train)
     train_time = time.time() - t0
 
     t0 = time.time()
-    preds = clf.predict(X_val)
+    preds = clf.predict(X_test)
     infer_time = time.time() - t0
 
-    acc = accuracy_score(y_val, preds) * 100
-    print(f"  {name:<30} Val Acc: {acc:.2f}%  "
+    acc = accuracy_score(y_test, preds) * 100
+    print(f"  {name:<30} Test Acc: {acc:.2f}%  "
           f"| Train: {train_time:.1f}s  Infer: {infer_time:.2f}s")
 
     return preds, acc
@@ -84,22 +87,22 @@ def run_model(name, clf, X_train, y_train, X_val, y_val, scaler=None):
 # BASELINE SUITE
 # ==========================================================
 
-def run_baseline(X_train, y_train, X_val, y_val, feature_name):
+def run_baseline(X_train, y_train, X_test, y_test, feature_name):
     print(f"\n── {feature_name} ──────────────────────────────")
 
     classifiers = {
-        "KNN (k=5)":          (KNeighborsClassifier(n_neighbors=5),  True),
-        "KNN (k=11)":         (KNeighborsClassifier(n_neighbors=11), True),
-        "SVM (RBF)":          (SVC(kernel="rbf", C=10, gamma="scale"), True),
-        "SVM (Linear)":       (SVC(kernel="linear", C=1),             True),
-        "Random Forest (100)":(RandomForestClassifier(n_estimators=100, n_jobs=-1), False),
-        "Random Forest (200)":(RandomForestClassifier(n_estimators=200, n_jobs=-1), False),
+        "KNN (k=5)":           (KNeighborsClassifier(n_neighbors=5),                  True),
+        "KNN (k=11)":          (KNeighborsClassifier(n_neighbors=11),                 True),
+        "SVM (RBF)":           (SVC(kernel="rbf", C=10, gamma="scale"),               True),
+        "SVM (Linear)":        (SVC(kernel="linear", C=1),                            True),
+        "Random Forest (100)": (RandomForestClassifier(n_estimators=100, n_jobs=-1),  False),
+        "Random Forest (200)": (RandomForestClassifier(n_estimators=200, n_jobs=-1),  False),
     }
 
     results = {}
     for name, (clf, use_scaler) in classifiers.items():
         scaler = StandardScaler() if use_scaler else None
-        preds, acc = run_model(name, clf, X_train, y_train, X_val, y_val, scaler)
+        preds, acc = run_model(name, clf, X_train, y_train, X_test, y_test, scaler)
         results[name] = {"acc": acc, "preds": preds}
 
     return results
@@ -110,7 +113,7 @@ def run_baseline(X_train, y_train, X_val, y_val, feature_name):
 
 def print_summary(all_results):
     print("\n" + "=" * 60)
-    print(f"{'Model':<30} {'Feature':<16} {'Val Acc':>8}")
+    print(f"{'Model':<30} {'Feature':<16} {'Test Acc':>8}")
     print("=" * 60)
 
     best_acc   = 0
@@ -136,42 +139,40 @@ if __name__ == "__main__":
 
     # ── load data ──────────────────────────────────────────
     print("=== LOADING DATA ===")
-    images, labels = load_data(CSV_FILE, DATASET_DIR, SHAPES)
-    train_images, train_labels, val_images, val_labels = train_test_split(
-        images, labels, test_size=0.2
-    )
-    print(f"Train: {len(train_images)} | Val: {len(val_images)}")
+    train_images, train_labels = load_data(CSV_FILE,      TRAIN_DIR, SHAPES)
+    test_images,  test_labels  = load_data(TEST_CSV_FILE, TEST_DIR,  SHAPES)
+    print(f"Train: {len(train_images)} | Test: {len(test_images)}")
 
     # ── feature sets ───────────────────────────────────────
     print("\n=== EXTRACTING FEATURES ===")
 
     print("  Raw pixel...")
     X_train_raw = extract_raw(train_images)
-    X_val_raw   = extract_raw(val_images)
+    X_test_raw  = extract_raw(test_images)
     print(f"  Raw feature shape: {X_train_raw.shape}")
 
     print("  CNN features...")
     cnn = CNN()
     cnn.load(WEIGHTS_FILE)
     X_train_cnn = extract_cnn(cnn, train_images)
-    X_val_cnn   = extract_cnn(cnn, val_images)
+    X_test_cnn  = extract_cnn(cnn, test_images)
     print(f"  CNN feature shape: {X_train_cnn.shape}")
 
     # ── run baselines ──────────────────────────────────────
     print("\n=== RUNNING BASELINES ===")
     all_results = {}
-    all_results["Raw pixel"] = run_baseline(X_train_raw, train_labels, X_val_raw, val_labels, "Raw pixel")
-    all_results["CNN feat"]  = run_baseline(X_train_cnn, train_labels, X_val_cnn, val_labels, "CNN feat")
+    all_results["Raw pixel"] = run_baseline(X_train_raw, train_labels, X_test_raw, test_labels, "Raw pixel")
+    all_results["CNN feat"]  = run_baseline(X_train_cnn, train_labels, X_test_cnn, test_labels, "CNN feat")
 
     # ── summary table ──────────────────────────────────────
     print_summary(all_results)
 
-    # ── confusion matrix for best CNN-feat model ───────────
+    # ── confusion matrix cho model tốt nhất ───────────────
     print("=== CONFUSION MATRIX (SVM RBF + CNN feat) ===")
     best_preds = all_results["CNN feat"]["SVM (RBF)"]["preds"]
-    print_classification_report(best_preds, val_labels, SHAPES)
+    print_classification_report(best_preds, test_labels, SHAPES)
     plot_confusion_matrix(
-        __import__("utils").confusion_matrix(best_preds, val_labels, len(SHAPES)),
+        confusion_matrix(best_preds, test_labels, len(SHAPES)),
         SHAPES,
         save_path="confusion_matrix_svm_cnn.png"
     )

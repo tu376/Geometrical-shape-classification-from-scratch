@@ -85,3 +85,107 @@ Saved confusion matrix to confusion_matrix_test.png
 
 === PREDICT NEW IMAGE ===
 Enter image path (Enter to skip): 
+
+=== LOADING DATA ===
+Train: 10000 | Test: 1000
+
+=== EXTRACTING FEATURES ===
+  Raw pixel...
+  Raw feature shape: (10000, 4096)
+  CNN features...
+Loaded weights from weights.npy
+  CNN feature shape: (10000, 4096)
+
+=== RUNNING BASELINES ===
+
+── Raw pixel ──────────────────────────────
+  KNN (k=5)                      Test Acc: 64.10%  | Train: 0.0s  Infer: 2.17s
+  KNN (k=11)                     Test Acc: 52.10%  | Train: 0.0s  Infer: 0.63s
+  SVM (RBF)                      Test Acc: 77.60%  | Train: 316.3s  Infer: 22.86s
+  SVM (Linear)                   Test Acc: 61.30%  | Train: 205.6s  Infer: 16.12s
+  Random Forest (100)            Test Acc: 85.00%  | Train: 8.2s  Infer: 0.05s
+  Random Forest (200)            Test Acc: 85.60%  | Train: 16.2s  Infer: 0.07s
+
+── CNN feat ──────────────────────────────
+  KNN (k=5)                      Test Acc: 99.30%  | Train: 0.0s  Infer: 0.50s
+  KNN (k=11)                     Test Acc: 99.10%  | Train: 0.0s  Infer: 0.51s
+  SVM (RBF)                      Test Acc: 99.50%  | Train: 118.5s  Infer: 16.00s
+  SVM (Linear)                   Test Acc: 99.30%  | Train: 38.7s  Infer: 5.93s
+  Random Forest (100)            Test Acc: 99.70%  | Train: 3.4s  Infer: 0.05s
+  Random Forest (200)            Test Acc: 99.80%  | Train: 6.4s  Infer: 0.07s
+
+============================================================
+Model                          Feature          Test Acc
+============================================================
+KNN (k=5)                      Raw pixel          64.10%
+KNN (k=11)                     Raw pixel          52.10%
+SVM (RBF)                      Raw pixel          77.60%
+SVM (Linear)                   Raw pixel          61.30%
+Random Forest (100)            Raw pixel          85.00%
+Random Forest (200)            Raw pixel          85.60%
+KNN (k=5)                      CNN feat           99.30%
+KNN (k=11)                     CNN feat           99.10%
+SVM (RBF)                      CNN feat           99.50%
+SVM (Linear)                   CNN feat           99.30%
+Random Forest (100)            CNN feat           99.70%
+Random Forest (200)            CNN feat           99.80%
+============================================================
+Best: Random Forest (200) + CNN feat  →  99.80%
+
+=== CONFUSION MATRIX (SVM RBF + CNN feat) ===
+
+Overall Accuracy: 99.50%
+
+Class             Prec  Recall      F1   Total
+----------------------------------------------
+circle          100.0%   99.4%   99.7%     156
+ellipse         100.0%   99.3%   99.6%     139
+square           97.9%   99.3%   98.6%     141
+triangle        100.0%   99.2%   99.6%     128
+rectangle        99.3%   99.3%   99.3%     141
+hexagon         100.0%  100.0%  100.0%     142
+octagon          99.4%  100.0%   99.7%     153
+----------------------------------------------
+Macro avg        99.5%   99.5%   99.5%
+Saved confusion matrix to confusion_matrix_svm_cnn.png
+
+Loading train_valid set...
+Loading test set...
+
+=== Train SET SUMMARY ===
+Images: 10000
+Classes: 7
+Class distribution:
+  circle    : 1411
+  ellipse   : 1420
+  square    : 1422
+  triangle  : 1454
+  rectangle : 1403
+  hexagon   : 1398
+  octagon   : 1492
+Image statistics:
+  shape: (10000, 1, 64, 64)
+  min: 0.0000
+  max: 1.0000
+  mean: 0.0258
+  std:  0.1586
+  zero ratio: 0.9742
+
+=== Test SET SUMMARY ===
+Images: 1000
+Classes: 7
+Class distribution:
+  circle    : 156
+  ellipse   : 139
+  square    : 141
+  triangle  : 128
+  rectangle : 141
+  hexagon   : 142
+  octagon   : 153
+Image statistics:
+  shape: (1000, 1, 64, 64)
+  min: 0.0000
+  max: 1.0000
+  mean: 0.0257
+  std:  0.1583
+  zero ratio: 0.9743
