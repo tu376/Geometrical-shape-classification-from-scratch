@@ -16,138 +16,45 @@ octagon          1193    299
 Total            7997   2003
 
 Found 'weights.npy'.
-Train again? (y/n): y
-
-=== TRAINING ===
-Epoch  1/20 | Train Loss: 1.9475  Acc: 24.20% | Val Loss: 1.6951  Acc: 38.94% | Time: 85.54s ✓ best
-Epoch  2/20 | Train Loss: 1.7703  Acc: 34.06% | Val Loss: 1.4036  Acc: 51.62% | Time: 80.47s ✓ best
-Epoch  3/20 | Train Loss: 1.5695  Acc: 45.48% | Val Loss: 1.0624  Acc: 62.41% | Time: 74.00s ✓ best
-Epoch  4/20 | Train Loss: 1.3541  Acc: 53.41% | Val Loss: 0.8427  Acc: 70.89% | Time: 74.40s ✓ best
-Epoch  5/20 | Train Loss: 1.1494  Acc: 60.81% | Val Loss: 0.6768  Acc: 78.18% | Time: 73.46s ✓ best
-Epoch  6/20 | Train Loss: 1.0037  Acc: 67.08% | Val Loss: 0.5629  Acc: 82.18% | Time: 73.50s ✓ best
-Epoch  7/20 | Train Loss: 0.8793  Acc: 71.43% | Val Loss: 0.4339  Acc: 88.42% | Time: 73.17s ✓ best
-Epoch  8/20 | Train Loss: 0.7848  Acc: 75.43% | Val Loss: 0.3571  Acc: 89.62% | Time: 77.25s ✓ best
-Epoch  9/20 | Train Loss: 0.7208  Acc: 77.97% | Val Loss: 0.3278  Acc: 92.66% | Time: 82.32s ✓ best
-Epoch 10/20 | Train Loss: 0.6584  Acc: 80.77% | Val Loss: 0.2451  Acc: 94.71% | Time: 73.79s ✓ best
-Epoch 11/20 | Train Loss: 0.6142  Acc: 81.77% | Val Loss: 0.2121  Acc: 96.41% | Time: 73.00s ✓ best
-Epoch 12/20 | Train Loss: 0.5904  Acc: 82.34% | Val Loss: 0.1968  Acc: 95.46% | Time: 73.35s ✓ best
-Epoch 13/20 | Train Loss: 0.5512  Acc: 83.43% | Val Loss: 0.1562  Acc: 96.61% | Time: 72.83s ✓ best
-Epoch 14/20 | Train Loss: 0.5144  Acc: 84.36% | Val Loss: 0.1545  Acc: 96.36% | Time: 73.37s ✓ best
-Epoch 15/20 | Train Loss: 0.4790  Acc: 86.39% | Val Loss: 0.1377  Acc: 97.20% | Time: 73.61s ✓ best
-Epoch 16/20 | Train Loss: 0.4632  Acc: 86.34% | Val Loss: 0.1274  Acc: 97.00% | Time: 74.20s ✓ best
-Epoch 17/20 | Train Loss: 0.4477  Acc: 86.51% | Val Loss: 0.1225  Acc: 97.15% | Time: 72.94s ✓ best
-Epoch 18/20 | Train Loss: 0.4416  Acc: 87.27% | Val Loss: 0.1208  Acc: 97.70% | Time: 73.42s ✓ best
-Epoch 19/20 | Train Loss: 0.4074  Acc: 88.33% | Val Loss: 0.1124  Acc: 97.15% | Time: 72.83s ✓ best
-Epoch 20/20 | Train Loss: 0.4143  Acc: 88.33% | Val Loss: 0.1184  Acc: 96.75% | Time: 70.28s
-
-Restored best weights (val loss: 0.1124)
-
-Total training time: 24m 57.71s
-Saved weights to weights.npy
+Train again? (y/n): n
+[CNN] Weights loaded ← weights.npy
 
 === Validation Set ===
 
-Overall Accuracy: 97.15%
+Overall Accuracy: 97.75%
 
 Class             Prec  Recall      F1   Total
 ----------------------------------------------
-circle           96.9%   98.6%   97.7%     283
-ellipse          98.5%   95.1%   96.8%     284
-square           95.2%   90.9%   93.0%     285
+circle           94.6%   99.6%   97.1%     283
+ellipse          99.6%   94.0%   96.7%     284
+square           95.1%   95.4%   95.3%     285
 triangle        100.0%  100.0%  100.0%     291
-rectangle        89.6%   95.4%   92.4%     281
+rectangle        95.0%   95.0%   95.0%     281
 hexagon         100.0%  100.0%  100.0%     280
 octagon         100.0%  100.0%  100.0%     299
 ----------------------------------------------
-Macro avg        97.2%   97.1%   97.1%
+Macro avg        97.8%   97.7%   97.7%
 
-Total execution time: 26m 0.68s
-Saved training curves to training_curves.png
+Total execution time: 0m 47.97s
 
 === TEST SET ===
 
 === Test Set ===
 
-Overall Accuracy: 96.40%
+Overall Accuracy: 97.90%
 
 Class             Prec  Recall      F1   Total
 ----------------------------------------------
-circle           98.7%   98.1%   98.4%     156
-ellipse          97.8%   97.1%   97.5%     139
-square           94.4%   84.4%   89.1%     141
-triangle        100.0%  100.0%  100.0%     128
-rectangle        84.8%   95.0%   89.6%     141
-hexagon         100.0%  100.0%  100.0%     142
-octagon         100.0%  100.0%  100.0%     153
+circle           95.9%   99.6%   97.7%     282
+ellipse         100.0%   96.1%   98.0%     311
+square           96.2%   93.9%   95.0%     293
+triangle        100.0%  100.0%  100.0%     276
+rectangle        93.9%   96.2%   95.0%     286
+hexagon         100.0%  100.0%  100.0%     283
+octagon          99.6%  100.0%   99.8%     269
 ----------------------------------------------
-Macro avg        96.5%   96.4%   96.4%
+Macro avg        97.9%   98.0%   97.9%
 Saved confusion matrix to confusion_matrix_test.png
-
-=== PREDICT NEW IMAGE ===
-Enter image path (Enter to skip): 
-
-=== LOADING DATA ===
-Train: 10000 | Test: 1000
-
-=== EXTRACTING FEATURES ===
-  Raw pixel...
-  Raw feature shape: (10000, 4096)
-  CNN features...
-Loaded weights from weights.npy
-  CNN feature shape: (10000, 4096)
-
-=== RUNNING BASELINES ===
-
-── Raw pixel ──────────────────────────────
-  KNN (k=5)                      Test Acc: 64.10%  | Train: 0.0s  Infer: 2.17s
-  KNN (k=11)                     Test Acc: 52.10%  | Train: 0.0s  Infer: 0.63s
-  SVM (RBF)                      Test Acc: 77.60%  | Train: 316.3s  Infer: 22.86s
-  SVM (Linear)                   Test Acc: 61.30%  | Train: 205.6s  Infer: 16.12s
-  Random Forest (100)            Test Acc: 85.00%  | Train: 8.2s  Infer: 0.05s
-  Random Forest (200)            Test Acc: 85.60%  | Train: 16.2s  Infer: 0.07s
-
-── CNN feat ──────────────────────────────
-  KNN (k=5)                      Test Acc: 99.30%  | Train: 0.0s  Infer: 0.50s
-  KNN (k=11)                     Test Acc: 99.10%  | Train: 0.0s  Infer: 0.51s
-  SVM (RBF)                      Test Acc: 99.50%  | Train: 118.5s  Infer: 16.00s
-  SVM (Linear)                   Test Acc: 99.30%  | Train: 38.7s  Infer: 5.93s
-  Random Forest (100)            Test Acc: 99.70%  | Train: 3.4s  Infer: 0.05s
-  Random Forest (200)            Test Acc: 99.80%  | Train: 6.4s  Infer: 0.07s
-
-============================================================
-Model                          Feature          Test Acc
-============================================================
-KNN (k=5)                      Raw pixel          64.10%
-KNN (k=11)                     Raw pixel          52.10%
-SVM (RBF)                      Raw pixel          77.60%
-SVM (Linear)                   Raw pixel          61.30%
-Random Forest (100)            Raw pixel          85.00%
-Random Forest (200)            Raw pixel          85.60%
-KNN (k=5)                      CNN feat           99.30%
-KNN (k=11)                     CNN feat           99.10%
-SVM (RBF)                      CNN feat           99.50%
-SVM (Linear)                   CNN feat           99.30%
-Random Forest (100)            CNN feat           99.70%
-Random Forest (200)            CNN feat           99.80%
-============================================================
-Best: Random Forest (200) + CNN feat  →  99.80%
-
-=== CONFUSION MATRIX (SVM RBF + CNN feat) ===
-
-Overall Accuracy: 99.50%
-
-Class             Prec  Recall      F1   Total
-----------------------------------------------
-circle          100.0%   99.4%   99.7%     156
-ellipse         100.0%   99.3%   99.6%     139
-square           97.9%   99.3%   98.6%     141
-triangle        100.0%   99.2%   99.6%     128
-rectangle        99.3%   99.3%   99.3%     141
-hexagon         100.0%  100.0%  100.0%     142
-octagon          99.4%  100.0%   99.7%     153
-----------------------------------------------
-Macro avg        99.5%   99.5%   99.5%
-Saved confusion matrix to confusion_matrix_svm_cnn.png
 
 Loading train_valid set...
 Loading test set...
@@ -172,20 +79,92 @@ Image statistics:
   zero ratio: 0.9742
 
 === Test SET SUMMARY ===
-Images: 1000
+Images: 2000
 Classes: 7
 Class distribution:
-  circle    : 156
-  ellipse   : 139
-  square    : 141
-  triangle  : 128
-  rectangle : 141
-  hexagon   : 142
-  octagon   : 153
+  circle    : 282
+  ellipse   : 311
+  square    : 293
+  triangle  : 276
+  rectangle : 286
+  hexagon   : 283
+  octagon   : 269
 Image statistics:
-  shape: (1000, 1, 64, 64)
+  shape: (2000, 1, 64, 64)
   min: 0.0000
   max: 1.0000
-  mean: 0.0257
-  std:  0.1583
-  zero ratio: 0.9743
+  mean: 0.0258
+  std:  0.1584
+  zero ratio: 0.9742
+Saved class distribution plot to eda_outputs\class_distribution_train.png
+Saved class distribution plot to eda_outputs\class_distribution_test.png
+Saved pixel histogram to eda_outputs\pixel_histogram_train.png
+Saved pixel histogram to eda_outputs\pixel_histogram_test.png
+Saved sample image grid to eda_outputs\sample_grid_train.png
+Saved sample image grid to eda_outputs\sample_grid_test.png
+Saved augmented examples plot to eda_outputs\augmented_examples.png
+
+EDA complete. Results saved to: eda_outputs
+
+=== LOADING DATA ===
+Train: 10000 | Test: 2000
+
+=== EXTRACTING FEATURES ===
+  Raw pixel...
+  Raw feature shape: (10000, 4096)
+  CNN features...
+[CNN] Weights loaded ← weights.npy
+  CNN feature shape: (10000, 4096)
+
+=== RUNNING BASELINES ===
+
+── Raw pixel ──────────────────────────────
+  KNN (k=5)                      Test Acc: 65.75%  | Train: 0.0s  Infer: 3.30s
+  KNN (k=11)                     Test Acc: 51.10%  | Train: 0.0s  Infer: 1.20s
+  SVM (RBF)                      Test Acc: 79.35%  | Train: 303.1s  Infer: 46.67s
+  SVM (Linear)                   Test Acc: 61.15%  | Train: 201.6s  Infer: 28.32s
+  Random Forest (100)            Test Acc: 86.05%  | Train: 6.9s  Infer: 0.05s
+  Random Forest (200)            Test Acc: 87.30%  | Train: 13.1s  Infer: 0.10s
+
+── CNN feat ──────────────────────────────
+  KNN (k=5)                      Test Acc: 99.10%  | Train: 0.0s  Infer: 0.95s
+  KNN (k=11)                     Test Acc: 98.70%  | Train: 0.0s  Infer: 0.96s
+  SVM (RBF)                      Test Acc: 99.55%  | Train: 95.8s  Infer: 28.04s
+  SVM (Linear)                   Test Acc: 99.35%  | Train: 32.5s  Infer: 10.46s
+  Random Forest (100)            Test Acc: 99.80%  | Train: 2.7s  Infer: 0.05s
+  Random Forest (200)            Test Acc: 99.65%  | Train: 5.6s  Infer: 0.08s
+
+============================================================
+Model                          Feature          Test Acc
+============================================================
+KNN (k=5)                      Raw pixel          65.75%
+KNN (k=11)                     Raw pixel          51.10%
+SVM (RBF)                      Raw pixel          79.35%
+SVM (Linear)                   Raw pixel          61.15%
+Random Forest (100)            Raw pixel          86.05%
+Random Forest (200)            Raw pixel          87.30%
+KNN (k=5)                      CNN feat           99.10%
+KNN (k=11)                     CNN feat           98.70%
+SVM (RBF)                      CNN feat           99.55%
+SVM (Linear)                   CNN feat           99.35%
+Random Forest (100)            CNN feat           99.80%
+Random Forest (200)            CNN feat           99.65%
+============================================================
+Best: Random Forest (100) + CNN feat  →  99.80%
+
+=== CONFUSION MATRIX (SVM RBF + CNN feat) ===
+
+Overall Accuracy: 99.55%
+
+Class             Prec  Recall      F1   Total
+----------------------------------------------
+circle           98.9%  100.0%   99.5%     282
+ellipse         100.0%   99.0%   99.5%     311
+square           98.3%   99.7%   99.0%     293
+triangle        100.0%   99.6%   99.8%     276
+rectangle        99.6%   99.0%   99.3%     286
+hexagon         100.0%  100.0%  100.0%     283
+octagon         100.0%   99.6%   99.8%     269
+----------------------------------------------
+Macro avg        99.6%   99.6%   99.6%
+Saved confusion matrix to confusion_matrix_svm_cnn.png

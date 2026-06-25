@@ -13,7 +13,7 @@ TEST_FILE   = "test.csv"
 
 SIZE       = 64
 NUM_IMAGES = 10000
-NUM_TEST   = 1000
+NUM_TEST   = 2000
 SHAPES     = ["circle", "ellipse", "square", "triangle", "rectangle", "hexagon", "octagon"]
 
 os.makedirs(DATASET_DIR, exist_ok=True)

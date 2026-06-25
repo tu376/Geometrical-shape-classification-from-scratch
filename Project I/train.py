@@ -100,8 +100,10 @@ def train(model, train_images, train_labels, val_images, val_labels):
                 "conv1_biases":   model.conv1.biases.copy(),
                 "conv2_kernels":  model.conv2.kernels.copy(),
                 "conv2_biases":   model.conv2.biases.copy(),
-                "linear_weights": model.linear.weights.copy(),
-                "linear_biases":  model.linear.biases.copy(),
+                "linear1_weights": model.linear1.weights.copy(),
+                "linear1_biases":  model.linear1.biases.copy(),
+                "linear2_weights": model.linear2.weights.copy(),
+                "linear2_biases":  model.linear2.biases.copy(),
             }
             tag = " ✓ best"
         else:
@@ -122,8 +124,10 @@ def train(model, train_images, train_labels, val_images, val_labels):
         model.conv1.biases    = best_weights["conv1_biases"]
         model.conv2.kernels   = best_weights["conv2_kernels"]
         model.conv2.biases    = best_weights["conv2_biases"]
-        model.linear.weights  = best_weights["linear_weights"]
-        model.linear.biases   = best_weights["linear_biases"]
+        model.linear1.weights  = best_weights["linear1_weights"]
+        model.linear1.biases   = best_weights["linear1_biases"]
+        model.linear2.weights  = best_weights["linear2_weights"]
+        model.linear2.biases   = best_weights["linear2_biases"]
         print(f"\nRestored best weights (val loss: {best_val_loss:.4f})")
 
     total_time = time.time() - start_time
