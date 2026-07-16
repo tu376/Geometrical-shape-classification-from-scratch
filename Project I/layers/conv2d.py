@@ -54,7 +54,7 @@ class Conv2D:
         shape = (N, C, K, K, Ho, Wo)
         strides = (
             input_padded.strides[0],
-            input_padded.strides[1],
+            input_padded.strides[1], 
             input_padded.strides[2],
             input_padded.strides[3],
             input_padded.strides[2],
