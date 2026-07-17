@@ -12,8 +12,6 @@ WEIGHTS_FILE = "weights.npy"
 CANVAS_SIZE = 256
 IMG_SIZE = 64
 DEFAULT_BRUSH_SIZE = 1
-MIN_BRUSH_SIZE = 1
-MAX_BRUSH_SIZE = 1
 
 
 class DrawDemoApp:
@@ -81,12 +79,14 @@ class DrawDemoApp:
         self.triangle_button = tk.Button(tools_frame, text="Triangle", command=lambda: self.set_tool("triangle"))
         self.hexagon_button = tk.Button(tools_frame, text="Hexagon", command=lambda: self.set_tool("hexagon"))
         self.octagon_button = tk.Button(tools_frame, text="Octagon", command=lambda: self.set_tool("octagon"))
+        self.pen_button = tk.Button(tools_frame, text="Pen", command=lambda: self.set_tool("pen"))
 
         self.rectangle_button.pack(side="left", padx=2, pady=2)
         self.ellipse_button.pack(side="left", padx=2, pady=2)
         self.triangle_button.pack(side="left", padx=2, pady=2)
         self.hexagon_button.pack(side="left", padx=2, pady=2)
         self.octagon_button.pack(side="left", padx=2, pady=2)
+        self.pen_button.pack(side="left", padx=2, pady=2)
 
         actions_frame = tk.Frame(controls_frame)
         actions_frame.pack(fill="x")
@@ -137,6 +137,14 @@ class DrawDemoApp:
             self.triangle_button.config(relief="raised")
             self.hexagon_button.config(relief="raised")
             self.octagon_button.config(relief="sunken")
+            self.pen_button.config(relief="raised")
+        elif tool == "pen":
+            self.rectangle_button.config(relief="raised")
+            self.ellipse_button.config(relief="raised")
+            self.triangle_button.config(relief="raised")
+            self.hexagon_button.config(relief="raised")
+            self.octagon_button.config(relief="raised")
+            self.pen_button.config(relief="sunken")
 
     def _draw_shape_preview(self, image, start, end, mode):
         draw = ImageDraw.Draw(image)
@@ -196,13 +204,25 @@ class DrawDemoApp:
                 angle = -3.14159 / 2 + i * 2 * 3.14159 / 8
                 points.append((cx + radius * 1.0 * 0.9 * __import__("math").cos(angle), cy + radius * 1.0 * 0.9 * __import__("math").sin(angle)))
             draw.polygon(points, outline=255, width=1)
+        elif mode == "pen":
+            draw.line([start, end], fill=self.current_color, width=self.current_brush_size)
 
     def on_button_press(self, event):
         self.last_point = self._to_image_coords(event.x, event.y)
         self.shape_start = self.last_point
 
+        if self.current_tool == "pen" and self.last_point is not None:
+            self.draw.point(self.last_point, fill=self.current_color)
+            self.update_canvas()
+
     def on_paint(self, event):
         x, y = self._to_image_coords(event.x, event.y)
+
+        if self.current_tool == "pen" and self.last_point is not None:
+            self.draw.line([self.last_point, (x, y)], fill=self.current_color, width=self.current_brush_size)
+            self.last_point = (x, y)
+            self.update_canvas()
+            return
 
         if self.current_tool not in {"rectangle", "ellipse", "triangle", "hexagon", "octagon"}:
             return
@@ -212,6 +232,11 @@ class DrawDemoApp:
         self._show_image(preview_image)
 
     def on_button_release(self, event):
+        if self.current_tool == "pen":
+            self.last_point = None
+            self.shape_start = None
+            return
+
         if self.current_tool in {"rectangle", "ellipse", "triangle", "hexagon", "octagon"} and self.shape_start is not None:
             x, y = self._to_image_coords(event.x, event.y)
             self._draw_shape_preview(self.image, self.shape_start, (x, y), self.current_tool)
